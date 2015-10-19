@@ -1,5 +1,6 @@
 require 'broken_record/job'
 require 'broken_record/result_aggregator'
+require 'broken_record/broken_record_report'
 require 'parallel'
 
 module BrokenRecord

@@ -22,6 +22,17 @@ Or install it yourself as:
 gem install broken_record
 ```
 
+## Setup
+
+To generate migration to create broken_record_reports table
+
+```bash
+rake generate broken_record:setup
+
+rake db:migrate
+```
+
+
 ## Usage
 
 To scan all records of all models in your project:
@@ -72,6 +83,8 @@ BrokenRecord.configure do |config|
     config.compact_output = true
 end
 ```
+
+You can also specify a custom `aggregator_class`. This will allow you to update modify the how the results are outputted.
 
 ## Contributing
 

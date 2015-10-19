@@ -3,6 +3,7 @@ module BrokenRecord
     def initialize
       @total_errors = 0
       @aggregated_results = {}
+      BrokenRecord::BrokenRecordReport.truncate!
     end
 
     def add_result(result)
@@ -19,7 +20,6 @@ module BrokenRecord
         puts "\nAll models validated successfully.".green
       else
         puts "\n#{@total_errors} errors were found while running validations.".red
-        exit 1
       end
     end
 
@@ -30,21 +30,8 @@ module BrokenRecord
     end
 
     def report_results(klass)
-      all_errors = @aggregated_results[klass].map(&:errors).flatten
-      start_time = @aggregated_results[klass].map(&:start_time).min
-      end_time = @aggregated_results[klass].map(&:end_time).max
-      duration = (end_time - start_time).round(3)
-
-      @total_errors += all_errors.count
-
-      print "Validating model #{klass}... ".ljust(70)
-      if all_errors.empty?
-        print '[PASS]'.green
-      else
-        print '[FAIL]'.red
-      end
-      print "  (#{duration}s)\n"
-      print all_errors.join if all_errors.any?
+      @total_errors += @aggregated_results[klass].map(&:errors).flatten.count
     end
+
   end
 end

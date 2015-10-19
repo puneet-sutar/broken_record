@@ -30,22 +30,19 @@ module BrokenRecord
 
         begin
           batch_size = 1000
-          compact_output = BrokenRecord::Config.compact_output
           record_ids.each_slice(batch_size) do |id_batch|
             model_scope.where("#{klass.table_name}.#{primary_key}" => id_batch).each do |r|
               begin
                 if !r.valid?
-                  message = "    Invalid record in #{klass} id=#{r.id}."
-                  r.errors.each { |attr,msg| message <<  "\n        #{attr} - #{msg}" } unless compact_output
-                  result.add_error message
+                  result.add_error(record: r.attributes, errors: r.errors, type: :invalid_record, klass: klass)
                 end
               rescue Exception => e
-                result.add_error serialize_exception("    Exception for record in #{klass} id=#{r.id} ", e, compact_output)
+                result.add_error(record: r.attributes, type: :exception_record, klass: klass, exception: e)
               end
             end
           end
         rescue Exception => e
-          result.add_error serialize_exception("    Exception while trying to load models for #{klass}.", e, compact_output)
+          result.add_error(type: :exception_record, klass: klass, exception: e)
         end
 
         result.stop_timer
@@ -53,11 +50,6 @@ module BrokenRecord
     end
 
     private
-
-    def serialize_exception(message, e, compact_output)
-      message << "- #{e}.\n" << e.backtrace.map { |line| "        #{line}"}.join("\n") unless compact_output
-      message
-    end
 
     def primary_key
       klass.primary_key

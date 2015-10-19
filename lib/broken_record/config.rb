@@ -1,3 +1,5 @@
+require 'broken_record/broken_record_report'
+
 module BrokenRecord
   module Config
     extend self
@@ -8,6 +10,7 @@ module BrokenRecord
     self.default_scopes = {}
     self.compact_output = false
     self.aggregator_class = 'BrokenRecord::ResultAggregator'
+    self.classes_to_skip = [BrokenRecord::BrokenRecordReport]
 
     def before_scan(&block)
       self.before_scan_callbacks << block

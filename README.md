@@ -31,7 +31,18 @@ rake generate broken_record:setup
 
 rake db:migrate
 ```
+## About broken_record/broken_record_reports table
 
+Each run of the scan wipes the table clean and repopulates it based on the errors found.
+
+`id` :- Primary key. Cannot be blank.
+
+`record_type` :- Model class for of the record having issues. Cannot be blank.
+ 
+`record_id` :- id of the record having issues. Will be blank if there was issue accessing the Model/Table and none of               the records were processed.
+ 
+`validation_errors` :- Error/Exceptions that occuered while processing the record. If the record_id is nil than the                        error/exception occured while fetching records for the table and none of the records were                           processed.
+`
 
 ## Usage
 
